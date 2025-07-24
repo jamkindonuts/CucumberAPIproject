@@ -1,4 +1,4 @@
-package com.qa.studyMate.stepDefinitions;
+package ui.studyMate.stepDefinitions;
 
 import io.cucumber.java.After;
 import io.cucumber.java.Before;

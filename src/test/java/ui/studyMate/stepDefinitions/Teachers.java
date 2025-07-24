@@ -1,6 +1,6 @@
-package com.qa.studyMate.stepDefinitions;
+package ui.studyMate.stepDefinitions;
 
-import com.qa.studyMate.pages.TeachersPage;
+import ui.studyMate.pages.TeachersPage;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;

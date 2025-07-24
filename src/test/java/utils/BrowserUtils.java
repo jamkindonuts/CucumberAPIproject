@@ -72,11 +72,11 @@ public class BrowserUtils {
         Date currentDate = new Date();
         String screenShorFileName = currentDate.toString().replace(" ", "-").replace(":", "-");
         if (scenario.isFailed()) {
-            //If scenario fails, get a screenshot
+            //If scenario fails, get a ui.screenshot
             File screenShotFile=((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-            //gets the screenshot and store it under our project
+            //gets the ui.screenshot and store it under our project
             try {
-                FileUtils.copyFile(screenShotFile, new File("src/test/java/screenshot/" +screenShorFileName+ ".png"));
+                FileUtils.copyFile(screenShotFile, new File("src/test/java/ui.screenshot/" +screenShorFileName+ ".png"));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

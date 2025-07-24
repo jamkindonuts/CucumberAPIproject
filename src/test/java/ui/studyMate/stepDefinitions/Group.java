@@ -1,8 +1,6 @@
-package com.qa.studyMate.stepDefinitions;
+package ui.studyMate.stepDefinitions;
 
-import com.qa.studyMate.pages.GroupsPage;
-import com.qa.studyMate.pages.LoginPage;
-import io.cucumber.java.en.Given;
+import ui.studyMate.pages.GroupsPage;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
