@@ -1,6 +1,6 @@
-package com.qa.studyMate.stepDefinitions;
+package ui.studyMate.stepDefinitions;
 
-import com.qa.studyMate.pages.CoursePage;
+import ui.studyMate.pages.CoursePage;
 import io.cucumber.java.en.*;
 import org.openqa.selenium.WebDriver;
 import utils.Driver;

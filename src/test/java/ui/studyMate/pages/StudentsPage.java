@@ -1,17 +1,13 @@
-package com.qa.studyMate.pages;
+package ui.studyMate.pages;
 
-import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import utils.BrowserUtils;
 import utils.WaitUtils;
 
-import java.time.Duration;
 import java.util.List;
 
 public class StudentsPage {

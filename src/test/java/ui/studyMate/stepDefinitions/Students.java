@@ -1,17 +1,12 @@
-package com.qa.studyMate.stepDefinitions;
+package ui.studyMate.stepDefinitions;
 
-import com.qa.studyMate.pages.LoginPage;
-import com.qa.studyMate.pages.StudentsPage;
-import io.cucumber.java.bs.A;
+import ui.studyMate.pages.StudentsPage;
 import io.cucumber.java.en.*;
 import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import utils.BrowserUtils;
 import utils.Driver;
 import utils.WaitUtils;
-
-import java.time.Duration;
 
 public class Students {
 

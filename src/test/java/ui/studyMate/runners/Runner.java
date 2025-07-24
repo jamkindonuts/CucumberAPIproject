@@ -1,4 +1,4 @@
-package com.qa.studyMate.runners;
+package ui.studyMate.runners;
 
 
 import io.cucumber.junit.Cucumber;
@@ -15,7 +15,7 @@ import org.junit.runner.RunWith;
                 "src/test/resources/studyMate/students.feature"
 
         },
-        glue = "com/qa/studyMate/stepDefinitions",
+        glue = "ui/studyMate/stepDefinitions",
         dryRun = false,
         tags = "@regression",
         plugin = {"pretty", "html:target/uiReport.html", "rerun:target/uiFailedTests.txt"}

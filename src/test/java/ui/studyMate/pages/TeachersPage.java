@@ -1,4 +1,4 @@
-package com.qa.studyMate.pages;
+package ui.studyMate.pages;
 
 import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
@@ -8,7 +8,6 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import utils.BrowserUtils;
-import utils.WaitUtils;
 
 import java.time.Duration;
 import java.util.List;
