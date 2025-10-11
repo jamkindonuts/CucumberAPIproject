@@ -89,7 +89,8 @@ public class CoursePage {
 
     }
 
-    public void checkAutomationInformation(String expectedHeader, String expectedDate) {
+    public void checkAutomationInformation(String expectedHeader, String expectedDate) throws InterruptedException {
+        Thread.sleep(200);
         Assert.assertEquals(BrowserUtils.getText(CoursesHeader), expectedHeader);
         Assert.assertTrue(AutomationButton.isDisplayed() && AutomationButton.isEnabled());
         Assert.assertEquals(BrowserUtils.getText(AutomationDateBox), expectedDate);
