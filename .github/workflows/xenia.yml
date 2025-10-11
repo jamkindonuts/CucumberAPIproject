@@ -1,0 +1,149 @@
+---
+name: validate yaml
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - master
+      - main
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup yq
+        uses: fluxcd/pkg/actions/yq@main
+      - name: Setup kubeconform
+        uses: fluxcd/pkg/actions/kubeconform@main
+      - name: Setup kustomize
+        uses: fluxcd/pkg/actions/kustomize@main
+      - name: Validate manifests
+        run: ./scripts/validate.sh
+---
+name: "CI Auto Lint"
+
+on:
+  pull_request:
+
+jobs:
+  run-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 0.13.6
+      - run: terraform fmt -recursive
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          # Optional, but recommended
+          # Defaults to "Apply automatic changes"
+          commit_message: "apply auto lint"
+---
+name: "Terraform Plan"
+
+on:
+  pull_request:
+
+jobs:
+  find-out-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      changed_directories: ${{ steps.set-output.outputs.changed_directories }} # The ⁠ dirs ⁠ doesn't exist in the outputs of changed-files@v35 action.
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v35
+        with:
+          dir_names: true
+          dir_names_max_depth: 3 # This is optional. If not provided, full subdirectories' paths will be provided. Use it if you need to trim the output. See docs for details: https://github.com/tj-actions/changed-files/tree/main#inputs.
+          files_ignore: |
+            .github/**
+            .venv/**
+            .gitignore
+          json: true
+          quotepath: false
+
+      - name: "Set output in the matrix format"
+        id: set-output
+        run: echo "changed_directories={\"dir\":${{ steps.changed-files.outputs.all_changed_files }}}" >> "$GITHUB_OUTPUT"
+
+  plan:
+    runs-on: ubuntu-latest
+    if: ${{ needs.find-out-changes.outputs.changed_directories != '{"dir":[]}' }}
+    strategy:
+      matrix: ${{fromJson(needs.find-out-changes.outputs.changed_directories)}}
+    needs:
+      - find-out-changes
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get environment
+        working-directory: ${{ matrix.dir }}
+        run: echo "environment=$(sed -nr 's/^ *organization = "(.+)"/\1/p' backend.tf)" >> "$GITHUB_OUTPUT"
+        id: get-environment
+
+      - name: Get name
+        working-directory: ${{ matrix.dir }}
+        run: echo "name=$(sed -nr 's/^ *name = "(.+)"/\1/p' backend.tf)" >> "$GITHUB_OUTPUT"
+        id: get-name
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.12
+
+      - name: Install requests (python)
+        run: |
+          pip install requests
+
+      - name: Run Get Workspace Python Script
+        run: |
+          python get_workspace.py >> "$GITHUB_OUTPUT"
+        env:
+          SCALR_TOKEN: ${{ secrets.SCALR_TOKEN }}
+          SCALR_ENVIRONMENT_ID: ${{ steps.get-environment.outputs.environment}}
+          SCALR_NAME: ${{ steps.get-name.outputs.name}}
+        id: get-workspace
+        working-directory: .github/workflows/scripts
+
+      - uses: Scalr/scalr-action@v1
+        with:
+          scalr_hostname: "org.scalr.io"
+          scalr_token: ${{ secrets.SCALR_TOKEN }}
+          scalr_workspace: ${{ steps.get-workspace.outputs.workspace }}
+          terraform_output: true
+
+      - run: terraform init
+        working-directory: ${{ matrix.dir }}
+
+      - id: plan
+        run: terraform plan -no-color
+        working-directory: ${{ matrix.dir }}
+        continue-on-error: true
+
+      - name: create comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            Scalr Has Planned! 👀
+
+            <details>
+              <summary>Plan Output 👈</summary>
+
+              
+⁠               ${{ steps.plan.outputs.stdout }}
+               ⁠
+
+            </details>
