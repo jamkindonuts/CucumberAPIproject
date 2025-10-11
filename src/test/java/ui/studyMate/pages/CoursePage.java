@@ -21,6 +21,7 @@ public class CoursePage {
 
     @FindBy(xpath = "//h2[contains(@class,'sc-hBxehG gRTRKz')]")
     WebElement CoursesHeader;
+    //good
 
     @FindBy(xpath = "//div[.='Automation']")
     WebElement AutomationButton;
@@ -93,5 +94,6 @@ public class CoursePage {
         Assert.assertTrue(AutomationButton.isDisplayed() && AutomationButton.isEnabled());
         Assert.assertEquals(BrowserUtils.getText(AutomationDateBox), expectedDate);
     }
+
 
 }
